@@ -1,18 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>
-            http://zp34.github.com/blog/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/
-        </loc>
-        <lastmod>2013-04-12T16:17:21+08:00</lastmod>
-    </url>
-    <url>
-        <loc>
-            http://zp34.github.com/blog/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/
-        </loc>
-        <lastmod>2013-04-12T16:17:21+08:00</lastmod>
-    </url>
-    <url>
         <loc>http://zp34.github.com/blog/archives/</loc>
         <lastmod>2013-04-12T16:17:21+08:00</lastmod>
     </url>
