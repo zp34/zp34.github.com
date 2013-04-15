@@ -7,8 +7,7 @@
 	<meta name="author" content="Jason Lee">
 
 	
-	<meta name="description" content=" Blog Archives
-">
+	<meta name="description" content="Apr 12th, 2013 ruby, sinatra, tdd Test Driven Development With Sinatra, Rspec, Capybara and Guard At my new work, we use the Sinatra framework to &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,10 +65,8 @@
 	</div>
 </nav>
 <hgroup>
-  <h1><a href="/">Code Junkie</a></h1>
-  
-    <h2>Life of a Web Developer in Singapore</h2>
-  
+  <h1><a href="#">Who Am I</a></h1>
+  <p class="subtitle">Hi! I am a Product Manager for <a href ='http://www.appkungfu.net'>MatchMove Global</a>. I started programming in 2012 and have fallen in love ever since. Feel free to drop me an e-mail if you want to get in touch.</p>
 </hgroup>
 
 </header>				
@@ -82,6 +79,292 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-12T17:51:00+08:00" data-updated="true" itemprop="datePublished">Apr 12<span>th</span>, 2013</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/sinatra/'>sinatra</a>, <a class='category' href='/blog/categories/tdd/'>tdd</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/04/12/test-driven-development-with-sinatra-rspec-and-guard/" itemprop="url">Test Driven Development With Sinatra, Rspec, Capybara and Guard</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>At my new work, we use the Sinatra framework to develop our projects. Being a huge fan of TDD, my first priority was to add auto testing functionalities to the projects.</p>
+
+<p>Having done a few Ruby on Rails projects previously, I particularly love the TDD system set up by <a href="http://ruby.railstutorial.org/#author">Michael Hartl</a> in <a href="http://ruby.railstutorial.org/ruby-on-rails-tutorial-book">his Ruby on Rails Tutorial</a>. However, that is specific to the Rails framework and needed hacking to function in Sinatra.</p>
+
+<p>Assuming you already have a Sinatra App running with <code>bundler</code>, add the following gems to your project&#8217;s <code>Gemfile</code> and run <code>bundle install</code>. If you are not using <code>bundler</code> in your projects, install and require these gems separately in your project.</p>
+
+<figure class='code'><figcaption><span>Gemfile  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">group</span> <span class="ss">:development</span><span class="p">,</span> <span class="ss">:test</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;rspec&#39;</span><span class="p">,</span> <span class="s1">&#39;2.13.0&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># guard gems</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;guard&#39;</span><span class="p">,</span> <span class="s1">&#39;1.7.0&#39;</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;guard-rspec&#39;</span><span class="p">,</span> <span class="s1">&#39;2.5.2&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># spork gems</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;guard-spork&#39;</span><span class="p">,</span> <span class="s1">&#39;1.4.2&#39;</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;spork&#39;</span><span class="p">,</span> <span class="s1">&#39;0.9.2&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">group</span> <span class="ss">:test</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;capybara&#39;</span><span class="p">,</span> <span class="s1">&#39;1.1.2&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">###### System-dependent gems goes below here</span>
+</span><span class='line'>  <span class="c1">### Test gems on Macintosh OS X</span>
+</span><span class='line'>  <span class="c1"># gem &#39;rb-fsevent&#39;, &#39;0.9.1&#39;, :require =&gt; false</span>
+</span><span class='line'>  <span class="c1"># gem &#39;growl&#39;, &#39;1.0.3&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">### Test gems on Linux</span>
+</span><span class='line'>  <span class="c1"># gem &#39;rb-inotify&#39;, &#39;0.8.8&#39;</span>
+</span><span class='line'>  <span class="c1"># gem &#39;libnotify&#39;, &#39;0.5.9&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">### Test gems on Windows</span>
+</span><span class='line'>  <span class="c1"># gem &#39;rb-fchange&#39;, &#39;0.0.5&#39;</span>
+</span><span class='line'>  <span class="c1"># gem &#39;rb-notifu&#39;, &#39;0.0.4&#39;</span>
+</span><span class='line'>  <span class="c1"># gem &#39;win32console&#39;, &#39;1.3.0&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Uncomment the above gems according to the platform which you are developing on.</p>
+
+<p>Create a spec folder in the root of your project. In this folder, create a folder <code>requests</code> and file <code>spec_helper.rb</code>. All your test files will be stored in the requests folder.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>mkdir spec/
+</span><span class='line'>mkdir spec/requests/
+</span><span class='line'>touch spec/spec_helper.rb
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>spec_helper</code> will be loaded at the start of your test scripts. Both Capybara and the Rack/test methods will be loaded by the <code>spec_helper</code> file and can be used while developing the test scripts.</p>
+
+<figure class='code'><figcaption><span>spec_helper.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;rubygems&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;spork&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;test&#39;</span>                    <span class="c1"># force the environment to &#39;test&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Spork</span><span class="o">.</span><span class="n">prefork</span> <span class="k">do</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">),</span> <span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;myapp.rb&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;rubygems&#39;</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;sinatra&#39;</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;rspec&#39;</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;rack/test&#39;</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;capybara&#39;</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;capybara/dsl&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">Capybara</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">Application</span>       <span class="c1"># in order to make Capybara work</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># set test environments</span>
+</span><span class='line'>  <span class="n">set</span> <span class="ss">:environment</span><span class="p">,</span> <span class="ss">:test</span>
+</span><span class='line'>  <span class="n">set</span> <span class="ss">:run</span><span class="p">,</span> <span class="kp">false</span>
+</span><span class='line'>  <span class="n">set</span> <span class="ss">:raise_errors</span><span class="p">,</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">set</span> <span class="ss">:logging</span><span class="p">,</span> <span class="kp">false</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">RSpec</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">conf</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">conf</span><span class="o">.</span><span class="n">include</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Test</span><span class="o">::</span><span class="no">Methods</span>
+</span><span class='line'>    <span class="n">conf</span><span class="o">.</span><span class="n">include</span> <span class="no">Capybara</span><span class="o">::</span><span class="no">DSL</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">app</span>
+</span><span class='line'>    <span class="vi">@app</span> <span class="o">||=</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">Application</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Spork</span><span class="o">.</span><span class="n">each_run</span> <span class="k">do</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next, create <code>Guardfile</code> and <code>.rspec</code> at the root folder of your project. The Guard gem will monitor the files in your projects based on the rules defined within <code>Guardfile</code>. The <code>.rspec</code> file contains the command line options passed to the process when rspec is executed.</p>
+
+<figure class='code'><figcaption><span>Guardfile  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_support/core_ext&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">guard</span> <span class="s1">&#39;spork&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="s1">&#39;Gemfile&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="s1">&#39;Gemfile.lock&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="s1">&#39;spec/spec_helper.rb&#39;</span><span class="p">)</span> <span class="p">{</span> <span class="ss">:rspec</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="s1">&#39;spec/support/&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="s1">&#39;myapp.rb&#39;</span><span class="p">)</span>           <span class="c1"># for example, reload spork when myapp.rb is changed</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">guard</span> <span class="s1">&#39;rspec&#39;</span><span class="p">,</span> <span class="ss">:wait</span> <span class="o">=&gt;</span> <span class="mi">60</span><span class="p">,</span> <span class="ss">:all_after_pass</span> <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span> <span class="ss">:cli</span> <span class="o">=&gt;</span> <span class="s1">&#39;--drb&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^spec/.+_spec\.rb$}</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^spec/factories/.+\.rb$}</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="s1">&#39;spec/spec_helper.rb&#39;</span><span class="p">)</span>                <span class="p">{</span> <span class="s2">&quot;spec&quot;</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^spec/support/(.+)\.rb$}</span><span class="p">)</span>          <span class="p">{</span> <span class="s2">&quot;spec&quot;</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="s1">&#39;myapp.rb&#39;</span><span class="p">)</span>                           <span class="p">{</span> <span class="s2">&quot;spec&quot;</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>.rpsec  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>--colour
+</span><span class='line'>--format progress
+</span><span class='line'>--drb
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now the configurations are complete. Install all the gems with <code>bundle install</code> command and create a new spec file to test your application. If you run the command <code>guard</code> or <code>bundle exec guard</code> in the root folder of your project, you will see Guard boot up and start to monitor the Sinatra project. Keep this command running as you develop your project and it will run your test scripts automatically each time you make a save.</p>
+
+<p>As with TDD, always develop your tests before coding. In this example, if you want to create a new page with &#8220;Hello World&#8221; at the homepage &#8220;/&#8221;, prepare a test file in the request folder called <code>spec/requests/home_page_spec.rb</code>. It is important to note that the <code>_spec.rb</code> at the end of the file is important as the <code>Guardfile</code> above is configured to monitor such files. As already stated, both capybara and rack/test methods can be used. The following example is coded using capybara dsl.</p>
+
+<figure class='code'><figcaption><span>/spec/requests/home_page_spec.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;spec_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">describe</span> <span class="s2">&quot;my first test&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">subject</span> <span class="p">{</span> <span class="n">page</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">describe</span> <span class="s2">&quot;Home page&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">before</span> <span class="p">{</span> <span class="n">visit</span> <span class="s1">&#39;/&#39;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">&#39;Hello World&#39;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Upon creating <code>/spec/requests/home_page_spec.rb</code>, Guard will auto execute and test the scripts in the folder. At this point Guard will auto run and fail as the controller is not yet ready. To run the test without using Guard, execute the command <code>rspec spec/requests/</code> to test everything in the folder without Guard or Spork.</p>
+
+<p>Finally, to pass the test, create the controller in <code>myapp.rb</code></p>
+
+<figure class='code'><figcaption><span>myapp.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">get</span> <span class="s1">&#39;/&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="s2">&quot;Hello World&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And Guard should pass the test now.</p>
+
+		
+		
+	</div>
+
+</article>
 
 </div>
 <nav id="pagenavi">
@@ -104,7 +387,7 @@
 
 
 <script type="text/javascript">
-      var disqus_shortname = 'iamzp';
+      var disqus_shortname = 'code junkie';
       
         
         var disqus_script = 'count.js';
